@@ -141,6 +141,20 @@ button{
   display:block;
   margin:16px 0;
 }
+
+.signature{
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #4f46e5;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+  pointer-events: none; /* prevents accidental clicks */
+}
+
+
 </style>
 </head>
 
@@ -182,6 +196,10 @@ button{
 
 <div class="preview">
 <div class="preview-frame" id="previewFrame"></div>
+</div>
+
+<div class="signature">
+  <span>Created by Thinesh ✨</span>
 </div>
 
 </div>
@@ -457,31 +475,22 @@ panel.style.padding="0 16px";
 </body>
 </html>
 `;
-
-  // Download HTML
+// Download HTML
   const blob = new Blob([htmlContent], { type: "text/html" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "index.html";
   a.click();
 };
-
-
-
-
 cardColor.oninput=
 accentColor.oninput=
 textColor.oninput=
 widthRange.oninput=
 radiusRange.oninput=renderPreview;
-
 addWrapperBtn.onclick=createWrapper;
-
 createWrapper();
 renderPreview();
 </script>
 
 </body>
 </html>
-
-
