@@ -3,494 +3,259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Accordion Generator</title>
+<title>Sidebar Page Loader</title>
 
 <style>
-body{
+:root{
+  --bg: linear-gradient(135deg,#1e1f4b,#2c2f7a);
+  --sidebar: rgba(255,255,255,0.08);
+  --accent: #6c63ff;
+  --accent-hover: #5a52e0;
+  --text: #ffffff;
+}
+
+*{
   margin:0;
-  padding:30px;
-  font-family:system-ui;
-  background:#f4f6f8;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui, -apple-system, sans-serif;
 }
 
-.layout{
-  display:grid;
-  grid-template-columns:420px 1fr;
-  gap:40px;
-  max-width:1400px;
-  margin:auto;
-}
-
-@media(max-width:900px){
-  .layout{grid-template-columns:1fr;}
-}
-
-.controls{
-  background:#fff;
-  padding:25px;
-  border-radius:18px;
-  box-shadow:0 15px 35px rgba(0,0,0,0.08);
-}
-
-.tit h2{text-align:center;}
-.group{margin-bottom:25px;}
-
-label{font-weight:600;margin-bottom:6px;display:block;}
-input, textarea{width:100%;}
-textarea{min-height:70px;}
-
-.wrapper-editor{
-  border:1px solid #ddd;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:12px;
-}
-
-.checkbox-label{
+body{
+  height:100vh;
+  background:var(--bg);
   display:flex;
-  align-items:center;
-  gap:8px;
-  cursor:pointer;
-  margin-bottom:10px;
-  font-weight:600;
 }
 
-.checkbox-label input{
-  width:18px;height:18px;
-}
-
-.dropzone{
-  border:2px dashed #ccc;
-  padding:15px;
-  text-align:center;
-  margin-top:10px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.dropzone.dragover{
-  border-color:#4f46e5;
-  background:#f0f0ff;
-}
-
-.upload-success{
-  color:#16a34a;
-  font-size:13px;
-  margin-top:6px;
-}
-
-.alt-row{
+/* Sidebar */
+.sidebar{
+  width:240px;
+  background:var(--sidebar);
+  backdrop-filter:blur(15px);
+  padding:30px 20px;
   display:flex;
-  gap:10px;
-  align-items:center;
-  margin-top:10px;
+  flex-direction:column;
+  gap:15px;
+  box-shadow:4px 0 20px rgba(0,0,0,0.3);
 }
 
-.alt-row input{flex:1;}
+.sidebar h2{
+  color:white;
+  margin-bottom:20px;
+}
 
-button{
-  width:100%;
-  padding:12px;
+.sidebar button{
+  padding:14px;
   border:none;
   border-radius:12px;
   cursor:pointer;
+  background:var(--accent);
+  color:white;
+  font-size:15px;
   font-weight:600;
+  transition:0.3s ease;
+  text-align:left;
 }
 
-.primary{background:#4f46e5;color:white;}
-
-.preview{
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
+.sidebar button:hover{
+  background:var(--accent-hover);
+  transform:translateX(5px);
 }
 
-.preview-frame{
-  padding:20px;
-  box-sizing:border-box;
+.sidebar button.active{
+  background:white;
+  color:black;
 }
 
-.wrapper{margin-bottom:16px;}
+/* Main Content */
+.main{
+  flex:1;
+  padding:30px;
+}
 
-.accordion{overflow:hidden;}
-
-.accordion button{
-  all:unset;
-  display:block;
+.viewer{
   width:100%;
-  padding:16px;
-  cursor:pointer;
-}
-
-.accordion button h2{
-  margin:0;
-  font-size:18px;
-}
-
-.panel{
-  max-height:0;
+  height:100%;
+  background:white;
+  border-radius:15px;
   overflow:hidden;
-  opacity:0;
-  transition:max-height .4s ease, opacity .3s ease;
-  padding:0 16px;
-  line-height:1.6;
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
 }
 
-.panel img{
+iframe{
   width:100%;
-  display:block;
-  margin:16px 0;
+  height:100%;
+  border:none;
+  opacity:0;
+  transition:opacity 0.4s ease;
 }
 
-.signature{
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #4f46e5;
-  opacity: 0.8;
-  letter-spacing: 0.5px;
-  pointer-events: none; /* prevents accidental clicks */
+  .signature{
+  margin-top:auto;
+  padding-top:20px;
+  font-size:13px;
+  text-align:center;
+  color:#ddd;
+  opacity:0.8;
+  transition:0.3s;
 }
 
+/* Creative signature glow */
+.signature span{
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:20px;
+  background:var(--neon);
+  background-size:200% 200%;
+  animation:neonMove 3s linear infinite;
+  color:white;
+  font-weight:600;
+  box-shadow:0 0 15px rgba(108,99,255,0.6);
+}
 
+.signature span:hover{
+  transform:scale(1.05);
+}
+
+iframe.show{
+  opacity:1;
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{
+    width:180px;
+  }
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0px rgba(108,99,255,0.7); }
+  50% { box-shadow: 0 0 20px rgba(108,99,255,1); }
+  100% { box-shadow: 0 0 0px rgba(108,99,255,0.7); }
+}
+
+.pulse {
+  animation: pulseGlow 1s ease-in-out 3;
+}
+/* PRO Badge */
+.pro-badge{
+  display:inline-block;
+  margin-left:8px;
+  padding:4px 10px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  border-radius:20px;
+  background:linear-gradient(90deg,#ff8a00,#ff00cc);
+  color:white;
+  box-shadow:0 0 12px rgba(255,0,200,0.6);
+  vertical-align:middle;
+}
 </style>
 </head>
 
 <body>
 
-<div class="layout">
-
-<div class="controls">
-
-<div class="group">
-<div class="tit"><h2>Accordion</h2></div>
-
-<label>Background Color</label>
-<input type="color" id="accentColor" value="#dd533a">
-
-<label>Button Color</label>
-<input type="color" id="cardColor" value="#1b1c38">
-
-<label>Text Color</label>
-<input type="color" id="textColor" value="#ffffff">
+<div class="sidebar">
+  <h2>Rise Interactivity<!--<span class="pro-badge">PRO</span>--></h2>
+  
+<button data-page="Accordion" onclick="loadPage('Accordion_Customize.html', this)">Accordion</button>
+<button data-page="Tab" onclick="loadPage('Tab_Customize.html', this)">Tab</button>
+<button data-page="Flip" onclick="loadPage('maintance.html', this)">Flip</button>
+<button data-page="Text-Entry" onclick="loadPage('maintance.html', this)">Text Entry</button>
+<button data-page="Certificate" onclick="loadPage('certificate-final.html', this)">Certificate</button>
+   <div class="signature" onclick="celebrate()">
+    <span>Developed by Thinesh ❤️</span>
+  </div>
 </div>
 
-<div class="group">
-<label>Width</label>
-<input type="range" id="widthRange" min="280" max="800" value="420">
-
-<label>Border Radius</label>
-<input type="range" id="radiusRange" min="0" max="32" value="16">
-</div>
-
-<div class="group">
-<div id="wrapperEditors"></div>
-<button id="addWrapperBtn">Add Wrapper</button>
-</div>
-
-<button class="primary" id="downloadBtn">Download HTML</button>
-
-</div>
-
-<div class="preview">
-<div class="preview-frame" id="previewFrame"></div>
-</div>
-
-<div class="signature">
-  <span>Created by Thinesh ✨</span>
-</div>
-
+<div class="main">
+  <div class="viewer">
+    <iframe id="frame"></iframe>
+  </div>
 </div>
 
 <script>
-let wrappers=[];
+function loadPage(page, btn){
+  const iframe = document.getElementById("frame");
 
-function createWrapper(){
-  wrappers.push({
-    title:"Accordion Title",
-    content:"Accordion content",
-    showImage:false,
-    imageFile:null,
-    imageName:null,
-    altText:"",
-    uploadSuccess:false
-  });
-  renderEditors();
-  renderPreview();
-}
+  // Remove active class from all buttons
+  document.querySelectorAll(".sidebar button")
+    .forEach(b => b.classList.remove("active"));
 
-function renderEditors(){
-  wrapperEditors.innerHTML="";
-  wrappers.forEach((w,i)=>{
-    const div=document.createElement("div");
-    div.className="wrapper-editor";
+  // Add active only if a button triggered it
+  if(btn){
+    btn.classList.add("active");
+  }
 
-    div.innerHTML=`
-      <label class="checkbox-label">
-        <input type="checkbox" ${w.showImage?"checked":""}>
-        Show Image
-      </label>
+  iframe.classList.remove("show");
 
-      <label>Title</label>
-      <input type="text" value="${w.title}">
-
-      <label>Content</label>
-      <textarea>${w.content}</textarea>
-
-      ${w.showImage?`
-        <div class="alt-row">
-          <div style="flex:1;">
-            <div class="dropzone">Drag & Drop Image Here</div>
-            ${w.uploadSuccess?`<div class="upload-success">✔ Image uploaded successfully</div>`:""}
-          </div>
-          <input type="text" placeholder="Alt text (optional)" value="${w.altText}">
-        </div>
-      `:""}
-    `;
-
-    const checkbox=div.querySelector('input[type="checkbox"]');
-    const titleInput=div.querySelectorAll("input")[1];
-    const contentInput=div.querySelector("textarea");
-    const dropzone=div.querySelector(".dropzone");
-    const altInput=div.querySelector('.alt-row input[type="text"]');
-
-    checkbox.onchange=()=>{
-      wrappers[i].showImage=checkbox.checked;
-      renderEditors();
-      renderPreview();
-    };
-
-    titleInput.oninput=()=>{wrappers[i].title=titleInput.value;renderPreview();}
-    contentInput.oninput=()=>{wrappers[i].content=contentInput.value;renderPreview();}
-    if(altInput){
-      altInput.oninput=()=>{wrappers[i].altText=altInput.value;renderPreview();}
+  setTimeout(() => {
+    iframe.src = page;
+    iframe.onload = () => {
+      iframe.classList.add("show");
     }
-
-    if(dropzone){
-      dropzone.addEventListener("dragover",e=>{
-        e.preventDefault();
-        dropzone.classList.add("dragover");
-      });
-
-      dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("dragover"));
-
-      dropzone.addEventListener("drop",e=>{
-        e.preventDefault();
-        dropzone.classList.remove("dragover");
-        const file=e.dataTransfer.files[0];
-        if(file && file.type.startsWith("image/")){
-          wrappers[i].imageFile=file;
-          wrappers[i].imageName=file.name;
-          wrappers[i].uploadSuccess=true;
-          renderEditors();
-          renderPreview();
-        }
-      });
-    }
-
-    wrapperEditors.appendChild(div);
-  });
+  }, 200);
 }
 
-function setupAccordion(scope){
-  scope.querySelectorAll(".accordion button").forEach(btn=>{
-    btn.onclick=()=>{
-      scope.querySelectorAll(".accordion button").forEach(b=>{
-        const panel=b.nextElementSibling;
-        if(b===btn && b.getAttribute("aria-expanded")==="false"){
-          b.setAttribute("aria-expanded","true");
-          panel.style.maxHeight=panel.scrollHeight+20+"px";
-          panel.style.opacity="1";
-          panel.style.padding="0 16px 24px 16px";
-        }else{
-          b.setAttribute("aria-expanded","false");
-          panel.style.maxHeight=null;
-          panel.style.opacity="0";
-          panel.style.padding="0 16px";
-        }
-      });
-    };
-  });
-}
-
-function renderPreview(){
-  previewFrame.innerHTML="";
-  previewFrame.style.width=widthRange.value+"px";
-  previewFrame.style.background=accentColor.value;
-  previewFrame.style.borderRadius=radiusRange.value+"px";
-
-  wrappers.forEach(w=>{
-    const wrapper=document.createElement("div");
-    wrapper.className="wrapper";
-
-    const accordion=document.createElement("div");
-    accordion.className="accordion";
-    accordion.style.background=cardColor.value;
-    accordion.style.borderRadius=radiusRange.value+"px";
-    accordion.style.color=textColor.value;
-
-    const button=document.createElement("button");
-    button.innerHTML="<h2>"+w.title+"</h2>";
-    button.setAttribute("aria-expanded","false");
-
-    const panel=document.createElement("div");
-    panel.className="panel";
-
-    let imageHTML="";
-    if(w.showImage && w.imageFile){
-      const url=URL.createObjectURL(w.imageFile);
-      const altAttr=w.altText.trim()?`alt="${w.altText}"`:"";
-      imageHTML=`<img src="${url}" ${altAttr} style="border-radius:${radiusRange.value}px;">`;
-    }
-
-    panel.innerHTML=`${w.content}${imageHTML}`;
-
-    accordion.appendChild(button);
-    accordion.appendChild(panel);
-    wrapper.appendChild(accordion);
-    previewFrame.appendChild(wrapper);
-  });
-
-  setupAccordion(previewFrame);
-}
-
-downloadBtn.onclick = async function () {
-
-  const clone = previewFrame.cloneNode(true);
-  const images = clone.querySelectorAll("img");
-
-  let fileCounter = 1;
-
-  images.forEach((img, index) => {
-
-    const w = wrappers[index];
-
-    if (w && w.imageFile) {
-
-      // Get original extension
-      const extension = w.imageFile.name.split('.').pop();
-
-      // Create new file name
-      const newFileName = `file${fileCounter}.${extension}`;
-
-      // Update image src in exported HTML
-      img.src = newFileName;
-      img.removeAttribute("style");
-
-      // Download renamed image
-      const imageLink = document.createElement("a");
-      imageLink.href = URL.createObjectURL(w.imageFile);
-      imageLink.download = newFileName;
-      imageLink.click();
-
-      fileCounter++;
-    }
-  });
-
-  const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<style>
-body{
-margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:system-ui;
-background:#ffffff;
-}
-.preview-frame{
-width:${widthRange.value}px;
-background:${accentColor.value};
-border-radius:${radiusRange.value}px;
-padding:20px;
-box-sizing:border-box;
-}
-.accordion{
-background:${cardColor.value};
-border-radius:${radiusRange.value}px;
-color:${textColor.value};
-overflow:hidden;
-margin-bottom:12px;
-transition:all .3s ease;
-}
-.accordion button{
-all:unset;
-display:block;
-width:100%;
-padding:16px;
-cursor:pointer;
-}
-.accordion button h2{
-margin:0;
-font-size:18px;
-}
-.panel{
-max-height:0;
-overflow:hidden;
-opacity:0;
-transition:max-height .4s ease, opacity .3s ease;
-padding:0 16px;
-line-height:1.6;
-}
-.panel img{
-width:100%;
-display:block;
-margin:16px 0;
-}
-</style>
-</head>
-<body>
-
-<div class="preview-frame">
-${clone.innerHTML}
-</div>
-
-<script>
-document.querySelectorAll(".accordion button").forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".accordion button").forEach(b=>{
-const panel=b.nextElementSibling;
-if(b===btn && b.getAttribute("aria-expanded")==="false"){
-b.setAttribute("aria-expanded","true");
-panel.style.maxHeight=panel.scrollHeight+20+"px";
-panel.style.opacity="1";
-panel.style.padding="0 16px 24px 16px";
-}else{
-b.setAttribute("aria-expanded","false");
-panel.style.maxHeight=null;
-panel.style.opacity="0";
-panel.style.padding="0 16px";
-}
-});
+// Load welcome page automatically WITHOUT activating any button
+window.onload = function(){
+  loadPage('welcome.html');
 };
-});
-<\/script>
-
-</body>
-</html>
-`;
-// Download HTML
-  const blob = new Blob([htmlContent], { type: "text/html" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "index.html";
-  a.click();
-};
-cardColor.oninput=
-accentColor.oninput=
-textColor.oninput=
-widthRange.oninput=
-radiusRange.oninput=renderPreview;
-addWrapperBtn.onclick=createWrapper;
-createWrapper();
-renderPreview();
 </script>
+<script>
+function celebrate(){
 
+
+
+  // 😊 RANDOM FLOATING EMOJIS
+  const emojis = ["😊","😎","🔥","🚀","✨","🎉","😁","🌟"];
+
+  for(let i = 0; i < 6; i++){
+
+    const emoji = document.createElement("div");
+    emoji.className = "emoji";
+    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+    emoji.style.left = Math.random() * window.innerWidth + "px";
+    emoji.style.top = window.innerHeight + "px";
+
+    emoji.style.position = "fixed";
+    emoji.style.fontSize = (20 + Math.random()*20) + "px";
+    emoji.style.pointerEvents = "none";
+    emoji.style.transition = "all 2s ease-out";
+
+    document.body.appendChild(emoji);
+
+    setTimeout(() => {
+      emoji.style.top = (window.innerHeight - 200 - Math.random()*200) + "px";
+      emoji.style.opacity = "0";
+    }, 50);
+
+    setTimeout(() => {
+      emoji.remove();
+    }, 2000);
+  }
+}
+</script>
+<script>
+window.addEventListener("message", function(event){
+
+  if(!event.data || !event.data.type) return;
+
+  if(event.data.type === "highlight"){
+    const pageName = event.data.page;
+    const buttons = document.querySelectorAll(".sidebar button");
+
+    buttons.forEach(btn=>{
+      btn.classList.remove("pulse");
+
+      if(btn.dataset.page === pageName){
+        btn.classList.add("pulse");
+      }
+    });
+  }
+
+});
+</script>
 </body>
 </html>
